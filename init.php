@@ -89,6 +89,11 @@ class bbpm_rc
 
 		});
 
+		add_filter( "plugin_action_links_".plugin_basename(__FILE__), function($links) {
+		    array_push( $links, '<a href="options-general.php?page=bbpm-recaptcha">' . __( 'Settings' ) . '</a>' );
+		  	return $links;
+		});
+
 	}
 
 	public function bbpmrc_roles_list() {
