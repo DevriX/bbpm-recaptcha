@@ -1,4 +1,4 @@
-# bbpm-recaptcha
+# reCaptcha for bbPress Messages WordPress Plugin
 enable reCaptcha for bbPress Messages - User Private Messages with notifications, widgets and media with no BuddyPress needed. http://blog.samelh.com/tag/bbpress-messages/
 
 Adds reCaptcha support for your bbPress Messages plugin.
