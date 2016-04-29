@@ -4,4 +4,7 @@ enable reCaptcha for bbPress Messages - User Private Messages with notifications
 Adds reCaptcha support for your bbPress Messages plugin.
 
 Requires:
-  - <a href="htp://go.samelh.com/get/bbpress-messages/">bbPress Messages PRO</a> v. >= 0.2.2 OR bbPress Messages Lite v. >= 0.2.2
+  - bbPress Messages v. 0.2.2 (<a href="http://go.samelh.com/get/bbpress-messages/">PRO</a> / <a href="https://wordpress.org/plugins/bbp-messages/">lite</a> )
+
+<img src="http://i.imgur.com/m2DNzOB.png" />
+<img src="http://blog.samelh.com/wp-content/uploads/2016/04/google-reCaptcha-bbPress-messages.png" />
