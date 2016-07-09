@@ -2,10 +2,10 @@
 
 /*
 Plugin Name: reCaptcha for bbPress Messages
-Plugin URI: http://bbpress-messages.samelh.com
+Plugin URI: http://go.samelh.com/get/bbpress-messages/
 Description: enable reCaptcha for bbPress Messages - User Private Messages with notifications, widgets and media with no BuddyPress needed.
 Author: Samuel Elh
-Version: 0.1.1
+Version: 0.1.2
 Author URI: http://samelh.com
 */
 
@@ -225,7 +225,7 @@ class bbpm_rc
 
 		$meta = get_option('bbpmrc_settings');
 
-		$ob = $meta > '' ? json_decode( stripslashes( html_entity_decode($meta) ) ) : new stdClass();
+		$ob = false !== ( $meta = json_decode( stripslashes( html_entity_decode($meta) ) ) ) ? $meta : new stdClass();
 
 		if( isset( $ob->enable ) && $ob->enable )
 			$ob->enable = true;
@@ -251,7 +251,7 @@ class bbpm_rc
 		if( ! ( isset( $ob->disFor ) && is_array( $ob->disFor ) ) )
 			$ob->disFor = array();
 
-		$ob->langs = array( "ar" => "Arabic","af" => "Afrikaans","am" => "Amharic","hy" => "Armenian","az" => "Azerbaijani","eu" => "Basque","bn" => "Bengali","bg" => "Bulgarian","ca" => "Catalan","zh-HK" => "Chinese (Hong Kong)","zh-CN" => "Chinese (Simplified)","zh-TW" => "Chinese (Traditional)","hr" => "Croatian","cs" => "Czech","da" => "Danish","nl" => "Dutch","en-GB" => "English (UK)","en" => "English (US)","et" => "Estonian","fil" => "Filipino","fi" => "Finnish","fr" => "French","fr-CA" => "French (Canadian)","gl" => "Galician","ka" => "Georgian","de" => "German","de-AT" => "German (Austria)","de-CH" => "German (Switzerland)","el" => "Greek","gu" => "Gujarati","iw" => "Hebrew","hi" => "Hindi","hu" => "Hungarain","is" => "Icelandic","id" => "Indonesian","it" => "Italian","ja" => "Japanese","kn" => "Kannada","ko" => "Korean","lo" => "Laothian","lv" => "Latvian","lt" => "Lithuanian","ms" => "Malay","ml" => "Malayalam","mr" => "Marathi","mn" => "Mongolian","no" => "Norwegian","fa" => "Persian","pl" => "Polish","pt" => "Portuguese","pt-BR" => "Portuguese (Brazil)","pt-PT" => "Portuguese (Portugal)","ro" => "Romanian","ru" => "Russian","sr" => "Serbian","si" => "Sinhalese","sk" => "Slovak","sl" => "Slovenian","es" => "Spanish","es-419" => "Spanish (Latin America)","sw" => "Swahili","sv" => "Swedish","ta" => "Tamil","te" => "Telugu","th" => "Thai","tr" => "Turkish","uk" => "Ukrainian","ur" => "Urdu","vi" => "Vietnamese","zu" => "Zulu" ); // didn't write all of this long list, JS helped extract it from https://developers.google.com/recaptcha/docs/language
+		$ob->langs = array( "ar" => "Arabic","af" => "Afrikaans","am" => "Amharic","hy" => "Armenian","az" => "Azerbaijani","eu" => "Basque","bn" => "Bengali","bg" => "Bulgarian","ca" => "Catalan","zh-HK" => "Chinese (Hong Kong)","zh-CN" => "Chinese (Simplified)","zh-TW" => "Chinese (Traditional)","hr" => "Croatian","cs" => "Czech","da" => "Danish","nl" => "Dutch","en-GB" => "English (UK)","en" => "English (US)","et" => "Estonian","fil" => "Filipino","fi" => "Finnish","fr" => "French","fr-CA" => "French (Canadian)","gl" => "Galician","ka" => "Georgian","de" => "German","de-AT" => "German (Austria)","de-CH" => "German (Switzerland)","el" => "Greek","gu" => "Gujarati","iw" => "Hebrew","hi" => "Hindi","hu" => "Hungarain","is" => "Icelandic","id" => "Indonesian","it" => "Italian","ja" => "Japanese","kn" => "Kannada","ko" => "Korean","lo" => "Laothian","lv" => "Latvian","lt" => "Lithuanian","ms" => "Malay","ml" => "Malayalam","mr" => "Marathi","mn" => "Mongolian","no" => "Norwegian","fa" => "Persian","pl" => "Polish","pt" => "Portuguese","pt-BR" => "Portuguese (Brazil)","pt-PT" => "Portuguese (Portugal)","ro" => "Romanian","ru" => "Russian","sr" => "Serbian","si" => "Sinhalese","sk" => "Slovak","sl" => "Slovenian","es" => "Spanish","es-419" => "Spanish (Latin America)","sw" => "Swahili","sv" => "Swedish","ta" => "Tamil","te" => "Telugu","th" => "Thai","tr" => "Turkish","uk" => "Ukrainian","ur" => "Urdu","vi" => "Vietnamese","zu" => "Zulu" ); // extracted from https://developers.google.com/recaptcha/docs/language
 
 		if( ! ( isset( $ob->lang ) && isset( $ob->langs[$ob->lang] ) ) )
 			$ob->lang = 'en';
@@ -267,21 +267,23 @@ class bbpm_rc
 
 		$data = get_userdata( $user_id );
 
-		if( ! $data )
+		if( empty( $data->roles ) )
 			return; // null
 
-		if( ! $this->settings()->enable || empty( $this->settings()->roles ) )
+		$settings = $this->settings();
+
+		if( ! $settings->enable || empty( $settings->roles ) )
 			return false;
 
-		if( in_array( $user_id, $this->settings()->disFor ) ) { return false; }
+		if( in_array( $user_id, $settings->disFor ) ) { return false; }
 
-		if( $this->settings()->disAf ) {
+		if( $settings->disAf ) {
 			$count = (int) get_user_meta( $user_id, 'bbpmrc_success_count', TRUE );
-			if( $count > (int) $this->settings()->disAf ) { return false; } // user reached success limit
+			if( $count > (int) $settings->disAf ) { return false; } // user reached success limit
 		}
 
 		foreach( $data->roles as $role ) {
-			if( in_array( $role, $this->settings()->roles ) ) { return true; }
+			if( in_array( $role, $settings->roles ) ) { return true; }
 		}
 
 		return false;
